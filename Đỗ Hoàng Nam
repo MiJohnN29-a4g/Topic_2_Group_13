@@ -1,0 +1,130 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp2());
+}
+
+class MyApp2 extends StatelessWidget {
+  const MyApp2({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Loan Calculator',
+      theme: ThemeData.dark(),
+      home: const LoanScreen2(),
+    );
+  }
+}
+
+class LoanScreen2 extends StatefulWidget {
+  const LoanScreen2({super.key});
+
+  @override
+  State<LoanScreen2> createState() => _LoanScreen2State();
+}
+
+class _LoanScreen2State extends State<LoanScreen2> {
+  final TextEditingController amountController = TextEditingController();
+  final TextEditingController rateController = TextEditingController();
+
+  double result = 0;
+
+  void calculate() {
+    double amount = double.tryParse(amountController.text) ?? 0;
+    double rate = double.tryParse(rateController.text) ?? 0;
+
+    setState(() {
+      result = amount * rate / 100;
+    });
+  }
+
+  @override
+  void dispose() {
+    amountController.dispose();
+    rateController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Tính lãi suất tháng"),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            // Ô nhập số tiền
+            TextField(
+              controller: amountController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: "Số tiền",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Ô nhập lãi suất
+            TextField(
+              controller: rateController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: "Lãi suất (%)",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            // Nút tính
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: calculate,
+                child: const Text("TÍNH"),
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            // Kết quả
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.deepPurple,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  const Text(
+                    "TIỀN LÃI",
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "${result.toStringAsFixed(0)} đ",
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
