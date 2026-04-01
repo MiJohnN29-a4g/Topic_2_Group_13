@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/landing_screen.dart';
+import 'screens/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "FlixFilm",
       theme: ThemeData.dark(),
-      home: const LandingScreen(), // 👈 QUAN TRỌNG
+      home: LoginScreen(), 
     );
   }
 }
