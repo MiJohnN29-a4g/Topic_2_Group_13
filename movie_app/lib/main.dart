@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "FlixFilm",
       theme: ThemeData.dark(),
-      home: LoginScreen(), // 👈 Bắt đầu từ màn đăng nhập
+      home: LoginScreen(),
     );
   }
 }
