@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="D:\Code\Chuyên đề 2\movie_app\windows\CMakeLists.txt" />
+    <CustomBuild Include="D:\Code\Github\Topic_2_Group_13\Topic_2_Group_13\movie_app\windows\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

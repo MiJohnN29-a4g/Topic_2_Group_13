@@ -8,14 +8,11 @@
 import 'dart:io'; // flutter_ignore: dart_io_import.
 import 'package:path_provider_android/path_provider_android.dart' as path_provider_android;
 import 'package:sqflite_android/sqflite_android.dart' as sqflite_android;
-import 'package:webview_flutter_android/webview_flutter_android.dart' as webview_flutter_android;
 import 'package:path_provider_foundation/path_provider_foundation.dart' as path_provider_foundation;
 import 'package:sqflite_darwin/sqflite_darwin.dart' as sqflite_darwin;
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart' as webview_flutter_wkwebview;
 import 'package:path_provider_linux/path_provider_linux.dart' as path_provider_linux;
 import 'package:path_provider_foundation/path_provider_foundation.dart' as path_provider_foundation;
 import 'package:sqflite_darwin/sqflite_darwin.dart' as sqflite_darwin;
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart' as webview_flutter_wkwebview;
 import 'package:path_provider_windows/path_provider_windows.dart' as path_provider_windows;
 
 @pragma('vm:entry-point')
@@ -42,15 +39,6 @@ class _PluginRegistrant {
         );
       }
 
-      try {
-        webview_flutter_android.AndroidWebViewPlatform.registerWith();
-      } catch (err) {
-        print(
-          '`webview_flutter_android` threw an error: $err. '
-          'The app may not function as expected until you remove this plugin from pubspec.yaml'
-        );
-      }
-
     } else if (Platform.isIOS) {
       try {
         path_provider_foundation.PathProviderFoundation.registerWith();
@@ -66,15 +54,6 @@ class _PluginRegistrant {
       } catch (err) {
         print(
           '`sqflite_darwin` threw an error: $err. '
-          'The app may not function as expected until you remove this plugin from pubspec.yaml'
-        );
-      }
-
-      try {
-        webview_flutter_wkwebview.WebKitWebViewPlatform.registerWith();
-      } catch (err) {
-        print(
-          '`webview_flutter_wkwebview` threw an error: $err. '
           'The app may not function as expected until you remove this plugin from pubspec.yaml'
         );
       }
@@ -104,15 +83,6 @@ class _PluginRegistrant {
       } catch (err) {
         print(
           '`sqflite_darwin` threw an error: $err. '
-          'The app may not function as expected until you remove this plugin from pubspec.yaml'
-        );
-      }
-
-      try {
-        webview_flutter_wkwebview.WebKitWebViewPlatform.registerWith();
-      } catch (err) {
-        print(
-          '`webview_flutter_wkwebview` threw an error: $err. '
           'The app may not function as expected until you remove this plugin from pubspec.yaml'
         );
       }

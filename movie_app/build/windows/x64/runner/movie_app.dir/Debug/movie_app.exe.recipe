@@ -2,13 +2,13 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\Code\Chuyên đề 2\movie_app\build\windows\x64\x64\Debug\ZERO_CHECK</FullPath>
+      <FullPath>D:\Code\Github\Topic_2_Group_13\Topic_2_Group_13\movie_app\build\windows\x64\x64\Debug\ZERO_CHECK</FullPath>
     </ProjectOutput>
     <ProjectOutput>
-      <FullPath>D:\Code\Chuyên đề 2\movie_app\build\windows\x64\flutter\x64\Debug\flutter_assemble</FullPath>
+      <FullPath>D:\Code\Github\Topic_2_Group_13\Topic_2_Group_13\movie_app\build\windows\x64\flutter\x64\Debug\flutter_assemble</FullPath>
     </ProjectOutput>
     <ProjectOutput>
-      <FullPath>D:\Code\Chuyên đề 2\movie_app\build\windows\x64\runner\Debug\movie_app.exe</FullPath>
+      <FullPath>D:\Code\Github\Topic_2_Group_13\Topic_2_Group_13\movie_app\build\windows\x64\runner\Debug\movie_app.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

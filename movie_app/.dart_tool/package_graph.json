@@ -10,7 +10,7 @@
         "cached_network_image",
         "cupertino_icons",
         "flutter",
-        "webview_flutter"
+        "youtube_player_flutter"
       ],
       "devDependencies": [
         "flutter_lints",
@@ -40,6 +40,14 @@
         "stream_channel",
         "test_api",
         "vector_math"
+      ]
+    },
+    {
+      "name": "youtube_player_flutter",
+      "version": "8.1.2",
+      "dependencies": [
+        "flutter",
+        "flutter_inappwebview"
       ]
     },
     {
@@ -157,6 +165,13 @@
         "stream_channel",
         "string_scanner",
         "term_glyph"
+      ]
+    },
+    {
+      "name": "flutter_inappwebview",
+      "version": "5.8.0",
+      "dependencies": [
+        "flutter"
       ]
     },
     {
@@ -562,44 +577,6 @@
         "collection",
         "source_span",
         "string_scanner"
-      ]
-    },
-    {
-      "name": "webview_flutter",
-      "version": "4.13.1",
-      "dependencies": [
-        "flutter",
-        "webview_flutter_android",
-        "webview_flutter_platform_interface",
-        "webview_flutter_wkwebview"
-      ]
-    },
-    {
-      "name": "webview_flutter_platform_interface",
-      "version": "2.15.1",
-      "dependencies": [
-        "flutter",
-        "meta",
-        "plugin_platform_interface"
-      ]
-    },
-    {
-      "name": "webview_flutter_wkwebview",
-      "version": "3.24.2",
-      "dependencies": [
-        "flutter",
-        "meta",
-        "path",
-        "webview_flutter_platform_interface"
-      ]
-    },
-    {
-      "name": "webview_flutter_android",
-      "version": "4.10.15",
-      "dependencies": [
-        "flutter",
-        "meta",
-        "webview_flutter_platform_interface"
       ]
     }
   ],

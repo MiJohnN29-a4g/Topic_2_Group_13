@@ -21,7 +21,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{78E60E19-9410-3751-865F-9C4BD572BB29}</ProjectGuid>
+    <ProjectGuid>{5C01594F-A8F5-3D2A-9237-BEC194E4B8EA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
     <Platform>x64</Platform>
@@ -88,11 +88,11 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="D:\Code\Chuyên đề 2\movie_app\windows\runner\CMakeLists.txt">
+    <CustomBuild Include="D:\Code\Github\Topic_2_Group_13\Topic_2_Group_13\movie_app\windows\runner\CMakeLists.txt">
       <UseUtf8Encoding>Always</UseUtf8Encoding>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/Code/Chuyên đề 2/movie_app/windows/runner/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/Code/Github/Topic_2_Group_13/Topic_2_Group_13/movie_app/windows/runner/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
-"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" "-SD:/Code/Chuyên đề 2/movie_app/windows" "-BD:/Code/Chuyên đề 2/movie_app/build/windows/x64" --check-stamp-file "D:/Code/Chuyên đề 2/movie_app/build/windows/x64/runner/CMakeFiles/generate.stamp"
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SD:/Code/Github/Topic_2_Group_13/Topic_2_Group_13/movie_app/windows -BD:/Code/Github/Topic_2_Group_13/Topic_2_Group_13/movie_app/build/windows/x64 --check-stamp-file D:/Code/Github/Topic_2_Group_13/Topic_2_Group_13/movie_app/build/windows/x64/runner/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -101,11 +101,11 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Code\Chuyên đề 2\movie_app\build\windows\x64\runner\CMakeFiles\generate.stamp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Code\Github\Topic_2_Group_13\Topic_2_Group_13\movie_app\build\windows\x64\runner\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Building Custom Rule D:/Code/Chuyên đề 2/movie_app/windows/runner/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Building Custom Rule D:/Code/Github/Topic_2_Group_13/Topic_2_Group_13/movie_app/windows/runner/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">setlocal
-"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" "-SD:/Code/Chuyên đề 2/movie_app/windows" "-BD:/Code/Chuyên đề 2/movie_app/build/windows/x64" --check-stamp-file "D:/Code/Chuyên đề 2/movie_app/build/windows/x64/runner/CMakeFiles/generate.stamp"
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SD:/Code/Github/Topic_2_Group_13/Topic_2_Group_13/movie_app/windows -BD:/Code/Github/Topic_2_Group_13/Topic_2_Group_13/movie_app/build/windows/x64 --check-stamp-file D:/Code/Github/Topic_2_Group_13/Topic_2_Group_13/movie_app/build/windows/x64/runner/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -114,11 +114,11 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">D:\Code\Chuyên đề 2\movie_app\build\windows\x64\runner\CMakeFiles\generate.stamp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">D:\Code\Github\Topic_2_Group_13\Topic_2_Group_13\movie_app\build\windows\x64\runner\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/Code/Chuyên đề 2/movie_app/windows/runner/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/Code/Github/Topic_2_Group_13/Topic_2_Group_13/movie_app/windows/runner/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
-"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" "-SD:/Code/Chuyên đề 2/movie_app/windows" "-BD:/Code/Chuyên đề 2/movie_app/build/windows/x64" --check-stamp-file "D:/Code/Chuyên đề 2/movie_app/build/windows/x64/runner/CMakeFiles/generate.stamp"
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SD:/Code/Github/Topic_2_Group_13/Topic_2_Group_13/movie_app/windows -BD:/Code/Github/Topic_2_Group_13/Topic_2_Group_13/movie_app/build/windows/x64 --check-stamp-file D:/Code/Github/Topic_2_Group_13/Topic_2_Group_13/movie_app/build/windows/x64/runner/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -127,7 +127,7 @@ exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Code\Chuyên đề 2\movie_app\build\windows\x64\runner\CMakeFiles\generate.stamp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Code\Github\Topic_2_Group_13\Topic_2_Group_13\movie_app\build\windows\x64\runner\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
     </CustomBuild>
   </ItemGroup>
@@ -135,14 +135,14 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="D:\Code\Chuyên đề 2\movie_app\build\windows\x64\ZERO_CHECK.vcxproj">
-      <Project>{A8B8A9D3-732B-30A3-8961-E89D40F23CBB}</Project>
+    <ProjectReference Include="D:\Code\Github\Topic_2_Group_13\Topic_2_Group_13\movie_app\build\windows\x64\ZERO_CHECK.vcxproj">
+      <Project>{C3FE8C1D-E4FA-30EB-AB77-334F2EAA4559}</Project>
       <Name>ZERO_CHECK</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
-    <ProjectReference Include="D:\Code\Chuyên đề 2\movie_app\build\windows\x64\runner\movie_app.vcxproj">
-      <Project>{96BD993F-60B7-31D4-8136-8EF1221452A5}</Project>
+    <ProjectReference Include="D:\Code\Github\Topic_2_Group_13\Topic_2_Group_13\movie_app\build\windows\x64\runner\movie_app.vcxproj">
+      <Project>{9D60008D-76D2-3A2F-A9AD-1BD919E47C71}</Project>
       <Name>movie_app</Name>
     </ProjectReference>
   </ItemGroup>
