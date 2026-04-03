@@ -1,0 +1,10 @@
+^D:\CODE\CHUYÊN ĐỀ 2\MOVIE_APP\BUILD\WINDOWS\X64\CMAKEFILES\538F5E7252D89CDB6F4DC4E0A4D45A96\INSTALL_FORCE.RULE
+setlocal
+cd .
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
