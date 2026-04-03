@@ -74,7 +74,7 @@ class _HeroBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenH = MediaQuery.of(context).size.height;
-    final bannerH = screenH * 0.72;
+    final bannerH = screenH * 0.65;
 
     return SizedBox(
       height: bannerH,
@@ -82,10 +82,11 @@ class _HeroBanner extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
+          // Background image with slight brightness
           Image.network(
             movie.backdrop,
             fit: BoxFit.cover,
-            alignment: Alignment.topCenter,
+            alignment: Alignment.center,
             loadingBuilder: (_, child, progress) {
               if (progress == null) return child;
               return Container(color: const Color(0xFF141414));
@@ -93,31 +94,42 @@ class _HeroBanner extends StatelessWidget {
             errorBuilder: (_, __, ___) =>
                 Container(color: const Color(0xFF141414)),
           ),
+          // Dark overlay to make text readable
+          Container(
+            color: Colors.black.withOpacity(0.4),
+),
+          // Gradient from left (transparent to dark)
           Positioned.fill(
             child: DecoratedBox(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment.centerRight,
-                  end: Alignment.centerLeft,
-                  colors: [Colors.transparent, Color(0x80000000), Color(0xCC000000)],
-                  stops: [0.4, 0.7, 1.0],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    Colors.black.withOpacity(0.8),
+                    Colors.black.withOpacity(0.3),
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.6),
+                  ],
+                  stops: const [0.0, 0.15, 0.5, 1.0],
                 ),
               ),
             ),
           ),
+          // Gradient from bottom
           Positioned.fill(
             child: DecoratedBox(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Color(0x33000000),
-                    Color(0xCC000000),
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.3),
                     Colors.black,
                   ],
-                  stops: [0.5, 0.75, 0.9, 1.0],
+                  stops: const [0.4, 0.6, 0.85, 1.0],
                 ),
               ),
             ),
@@ -166,7 +178,7 @@ class _HeroBanner extends StatelessWidget {
                     _BannerButton(
                       icon: Icons.info_outline_rounded,
                       label: 'Thông tin',
-                      backgroundColor: const Color(0x88808080),
+backgroundColor: const Color(0x88808080),
                       foregroundColor: Colors.white,
                       onPressed: onInfo,
                     ),
@@ -275,7 +287,7 @@ class _MovieRow extends StatelessWidget {
 
 class _PosterCard extends StatefulWidget {
   final Movie movie;
-  final VoidCallback onTap;
+final VoidCallback onTap;
   final VoidCallback onInfoTap;
 
   const _PosterCard({
@@ -354,7 +366,7 @@ class _PosterCardState extends State<_PosterCard> {
                             Text(
                               widget.movie.rating,
                               style: const TextStyle(
-                                color: Color(0xFFE5B30F),
+color: Color(0xFFE5B30F),
                                 fontSize: 10,
                                 fontWeight: FontWeight.w600,
                               ),
