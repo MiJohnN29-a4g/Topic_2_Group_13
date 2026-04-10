@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import '../database/database_helper.dart';
 import '../data/movie_data.dart';
 import '../models/movie.dart';
+import '../models/user.dart';
 import 'detail_screen.dart';
 import 'watch_screen.dart';
+import 'membership_screen.dart';
 
 class LandingScreen extends StatefulWidget {
-  const LandingScreen({super.key});
+  final User? user;
+
+  const LandingScreen({super.key, this.user});
 
   @override
   State<LandingScreen> createState() => _LandingScreenState();
@@ -13,6 +18,21 @@ class LandingScreen extends StatefulWidget {
 
 class _LandingScreenState extends State<LandingScreen> {
   int _featuredIndex = 0;
+  User? _currentUser;
+  final _dbHelper = DatabaseHelper.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+  }
+
+  void _loadUser() async {
+    if (widget.user != null) {
+      final user = await _dbHelper.getUserById(widget.user!.id!);
+      setState(() => _currentUser = user);
+    }
+  }
 
   void _openDetail(Movie movie) {
     showDialog(
@@ -22,36 +42,98 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 
+  void _openMembership() {
+    if (_currentUser == null) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => MembershipScreen(user: _currentUser!)),
+    ).then((_) => _loadUser());
+  }
+
+  List<Movie> _getMoviesByGenre(String genre) {
+    return movies.where((m) => m.genre.contains(genre)).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final featured = movies[_featuredIndex];
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _HeroBanner(
-              movie: featured,
-              onPlay: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => WatchScreen(movie: featured),
-                ),
+      body: Column(
+        children: [
+          // Top Bar
+          _TopBar(
+            user: _currentUser,
+            onMembership: _openMembership,
+            onLogout: () {
+              Navigator.pushReplacementNamed(context, '/');
+            },
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 16),
+                  _HeroBanner(
+                    movie: featured,
+                    onPlay: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => WatchScreen(movie: featured),
+                      ),
+                    ),
+                    onInfo: () => _openDetail(featured),
+                  ),
+                  const SizedBox(height: 24),
+                  _MovieRow(
+                    title: 'Trending',
+                    movies: movies,
+                    onTap: (index) => setState(() => _featuredIndex = index),
+                    onInfoTap: (movie) => _openDetail(movie),
+                  ),
+                  const SizedBox(height: 24),
+                  _MovieRow(
+title: 'Hành động',
+                    movies: _getMoviesByGenre('Hành động'),
+                    onTap: (index) {},
+                    onInfoTap: (movie) => _openDetail(movie),
+                  ),
+                  const SizedBox(height: 24),
+                  _MovieRow(
+                    title: 'Chính kịch',
+                    movies: _getMoviesByGenre('Chính kịch'),
+                    onTap: (index) {},
+                    onInfoTap: (movie) => _openDetail(movie),
+                  ),
+                  const SizedBox(height: 24),
+                  _MovieRow(
+                    title: 'Tội phạm',
+                    movies: _getMoviesByGenre('Tội phạm'),
+                    onTap: (index) {},
+                    onInfoTap: (movie) => _openDetail(movie),
+                  ),
+                  const SizedBox(height: 24),
+                  _MovieRow(
+                    title: 'Khoa học viễn tưởng',
+                    movies: _getMoviesByGenre('Khoa học viễn tưởng'),
+                    onTap: (index) {},
+                    onInfoTap: (movie) => _openDetail(movie),
+                  ),
+                  const SizedBox(height: 24),
+                  _MovieRow(
+                    title: 'Lãng mạn',
+                    movies: _getMoviesByGenre('Lãng mạn'),
+                    onTap: (index) {},
+                    onInfoTap: (movie) => _openDetail(movie),
+                  ),
+                  const SizedBox(height: 32),
+                ],
               ),
-              onInfo: () => _openDetail(featured),
             ),
-            const SizedBox(height: 24),
-            _MovieRow(
-              title: 'Trending',
-              movies: movies,
-              onTap: (index) => setState(() => _featuredIndex = index),
-              onInfoTap: (movie) => _openDetail(movie),
-            ),
-            const SizedBox(height: 32),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -96,8 +178,8 @@ class _HeroBanner extends StatelessWidget {
           ),
           // Dark overlay to make text readable
           Container(
-            color: Colors.black.withOpacity(0.4),
-),
+color: Colors.black.withOpacity(0.4),
+          ),
           // Gradient from left (transparent to dark)
           Positioned.fill(
             child: DecoratedBox(
@@ -176,9 +258,9 @@ class _HeroBanner extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                     _BannerButton(
-                      icon: Icons.info_outline_rounded,
+icon: Icons.info_outline_rounded,
                       label: 'Thông tin',
-backgroundColor: const Color(0x88808080),
+                      backgroundColor: const Color(0x88808080),
                       foregroundColor: Colors.white,
                       onPressed: onInfo,
                     ),
@@ -276,7 +358,7 @@ class _MovieRow extends StatelessWidget {
                 movie: movies[i],
                 onTap: () => onTap(i),
                 onInfoTap: () => onInfoTap(movies[i]),
-              );
+);
             },
           ),
         ),
@@ -287,7 +369,7 @@ class _MovieRow extends StatelessWidget {
 
 class _PosterCard extends StatefulWidget {
   final Movie movie;
-final VoidCallback onTap;
+  final VoidCallback onTap;
   final VoidCallback onInfoTap;
 
   const _PosterCard({
@@ -361,12 +443,12 @@ class _PosterCardState extends State<_PosterCard> {
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            const Icon(Icons.star, color: Color(0xFFE5B30F), size: 10),
+const Icon(Icons.star, color: Color(0xFFE5B30F), size: 10),
                             const SizedBox(width: 3),
                             Text(
                               widget.movie.rating,
                               style: const TextStyle(
-color: Color(0xFFE5B30F),
+                                color: Color(0xFFE5B30F),
                                 fontSize: 10,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -388,6 +470,110 @@ color: Color(0xFFE5B30F),
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Top Bar với thông tin user
+// ─────────────────────────────────────────────────────────────────────────────
+class _TopBar extends StatelessWidget {
+  final User? user;
+  final VoidCallback onMembership;
+  final VoidCallback onLogout;
+
+  const _TopBar({
+    required this.user,
+    required this.onMembership,
+    required this.onLogout,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final hasMembership = user?.hasActiveMembership ?? false;
+    final remainingDays = user?.remainingDays;
+
+    return Container(
+      height: 60,
+      color: const Color(0xFF141414),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        children: [
+          // Logo
+          const Text(
+            'FLIXFILM',
+            style: TextStyle(
+              color: Colors.red,
+              fontSize: 24,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 2,
+            ),
+          ),
+          const Spacer(),
+          // User info
+          if (user != null) ...[
+            // Membership status
+            if (hasMembership)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: Colors.green.withOpacity(0.5)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.star, color: Colors.green, size: 16),
+                    const SizedBox(width: 6),
+                    Text(
+'Còn $remainingDays ngày',
+                      style: const TextStyle(
+                        color: Colors.green,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            const SizedBox(width: 12),
+            // Email
+            Text(
+              user!.email,
+              style: const TextStyle(color: Colors.white70, fontSize: 13),
+            ),
+            const SizedBox(width: 16),
+            // Membership button
+            ElevatedButton(
+              onPressed: onMembership,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: hasMembership ? Colors.green : Colors.amber,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              child: Text(
+                hasMembership ? 'Gia hạn' : 'Nâng cấp',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            // Logout button
+            IconButton(
+              onPressed: onLogout,
+              icon: const Icon(Icons.logout, color: Colors.white60),
+              tooltip: 'Đăng xuất',
+            ),
+          ] else ...[
+            const Spacer(),
+          ],
+        ],
       ),
     );
   }
