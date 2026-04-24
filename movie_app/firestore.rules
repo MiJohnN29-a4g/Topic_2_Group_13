@@ -1,0 +1,44 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Hàm helper kiểm tra user đã đăng nhập chưa
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Movies collection
+    match /movies/{movieId} {
+      // Ai cũng có thể đọc phim (cho phép xem danh sách phim không cần login)
+      allow read: if true;
+
+      // Chỉ admin mới có thể ghi/sửa/xóa
+      allow write, update, delete: if isAuthenticated();
+    }
+
+    // Episodes subcollection (trong mỗi movie)
+    match /movies/{movieId}/episodes/{episodeId} {
+      allow read: if true;
+      allow write, update, delete: if isAuthenticated();
+    }
+
+    // Users collection
+    match /users/{userId} {
+      // User chỉ đọc được thông tin của chính mình
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+
+      // User có thể tạo và cập nhật thông tin của chính mình
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Watch history collection
+    match /watch_history/{historyId} {
+      // User chỉ đọc và ghi lịch sử xem của chính mình
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+  }
+}

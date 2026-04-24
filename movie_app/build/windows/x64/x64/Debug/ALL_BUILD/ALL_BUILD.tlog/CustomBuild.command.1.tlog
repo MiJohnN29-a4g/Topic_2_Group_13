@@ -1,6 +1,6 @@
-^D:\CODE\GITHUB\TOPIC_2_GROUP_13\TOPIC_2_GROUP_13\MOVIE_APP\WINDOWS\CMAKELISTS.TXT
+^D:\CODE\CHUYÊN ĐỀ 2\MOVIE_APP\WINDOWS\CMAKELISTS.TXT
 setlocal
-"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SD:/Code/Github/Topic_2_Group_13/Topic_2_Group_13/movie_app/windows -BD:/Code/Github/Topic_2_Group_13/Topic_2_Group_13/movie_app/build/windows/x64 --check-stamp-file D:/Code/Github/Topic_2_Group_13/Topic_2_Group_13/movie_app/build/windows/x64/CMakeFiles/generate.stamp
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" "-SD:/Code/Chuyên đề 2/movie_app/windows" "-BD:/Code/Chuyên đề 2/movie_app/build/windows/x64" --check-stamp-file "D:/Code/Chuyên đề 2/movie_app/build/windows/x64/CMakeFiles/generate.stamp"
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone

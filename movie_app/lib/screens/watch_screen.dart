@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../models/movie.dart';
 
 class WatchScreen extends StatefulWidget {
@@ -18,11 +19,42 @@ class WatchScreen extends StatefulWidget {
 class _WatchScreenState extends State<WatchScreen> {
   late int _currentEp;
   bool _isPlaying = false;
+  YoutubePlayerController? _controller;
+  String? _currentVideoId;
 
   @override
   void initState() {
     super.initState();
     _currentEp = widget.startEpisode;
+    _initController();
+  }
+
+  void _initController() {
+    _controller?.dispose();
+    _currentVideoId = widget.movie.trailerKey;
+    _controller = YoutubePlayerController(
+      initialVideoId: _currentVideoId!,
+      flags: const YoutubePlayerFlags(
+        autoPlay: true,
+        mute: false,
+        showLiveFullscreenButton: false,
+        forceHD: false,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  void _changeEpisode(int episodeNumber) {
+    setState(() {
+      _currentEp = episodeNumber;
+      _isPlaying = false;
+      _initController();
+    });
   }
 
   Episode? get _episode {
@@ -54,17 +86,16 @@ class _WatchScreenState extends State<WatchScreen> {
           Expanded(
             child: widget.movie.isSeries
                 ? _SeriesLayout(
+                    controller: _controller,
                     movie: widget.movie,
                     currentEp: _currentEp,
                     currentTitle: _currentTitle,
                     isPlaying: _isPlaying,
                     onPlay: () => setState(() => _isPlaying = true),
-                    onEpisodeTap: (n) => setState(() {
-                      _currentEp = n;
-                      _isPlaying = false;
-                    }),
+                    onEpisodeTap: _changeEpisode,
                   )
                 : _MovieLayout(
+                    controller: _controller,
                     movie: widget.movie,
                     isPlaying: _isPlaying,
                     onPlay: () => setState(() => _isPlaying = true),
@@ -80,6 +111,7 @@ class _WatchScreenState extends State<WatchScreen> {
 // Series layout: player (left wide) + episode list (right sidebar)
 // ─────────────────────────────────────────────────────────────────────────────
 class _SeriesLayout extends StatelessWidget {
+  final YoutubePlayerController? controller;
   final Movie movie;
   final int currentEp;
   final String currentTitle;
@@ -88,6 +120,7 @@ class _SeriesLayout extends StatelessWidget {
   final ValueChanged<int> onEpisodeTap;
 
   const _SeriesLayout({
+    required this.controller,
     required this.movie,
     required this.currentEp,
     required this.currentTitle,
@@ -112,7 +145,7 @@ class _SeriesLayout extends StatelessWidget {
                 AspectRatio(
                   aspectRatio: 16 / 9,
                   child: _VideoPlayer(
-                    trailerKey: movie.trailerKey,
+                    controller: controller,
                     backdrop: movie.backdrop,
                     isPlaying: isPlaying,
                     onPlay: onPlay,
@@ -238,11 +271,13 @@ class _SeriesLayout extends StatelessWidget {
 // Movie layout: centered player + description below
 // ─────────────────────────────────────────────────────────────────────────────
 class _MovieLayout extends StatelessWidget {
+  final YoutubePlayerController? controller;
   final Movie movie;
   final bool isPlaying;
   final VoidCallback onPlay;
 
   const _MovieLayout({
+    required this.controller,
     required this.movie,
     required this.isPlaying,
     required this.onPlay,
@@ -257,7 +292,7 @@ class _MovieLayout extends StatelessWidget {
           AspectRatio(
             aspectRatio: 16 / 9,
             child: _VideoPlayer(
-              trailerKey: movie.trailerKey,
+              controller: controller,
               backdrop: movie.backdrop,
               isPlaying: isPlaying,
               onPlay: onPlay,
@@ -312,13 +347,13 @@ class _MovieLayout extends StatelessWidget {
 // Video Player widget (thumbnail + play button → YouTube embed)
 // ─────────────────────────────────────────────────────────────────────────────
 class _VideoPlayer extends StatelessWidget {
-  final String trailerKey;
+  final YoutubePlayerController? controller;
   final String backdrop;
   final bool isPlaying;
   final VoidCallback onPlay;
 
   const _VideoPlayer({
-    required this.trailerKey,
+    required this.controller,
     required this.backdrop,
     required this.isPlaying,
     required this.onPlay,
@@ -326,36 +361,17 @@ class _VideoPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (isPlaying) {
-      // ── Khi đã nhấn play: hiển thị YouTube embed ──────────────────
-      // Dùng webview_flutter package:
-      // return WebViewWidget(controller: WebViewController()
-      //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      //   ..loadRequest(Uri.parse(
-      //     'https://www.youtube.com/embed/$trailerKey?autoplay=1')));
-
-      // Placeholder cho đến khi thêm package:
-      return Container(
-        color: Colors.black,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.play_circle_fill, color: Colors.red, size: 56),
-              const SizedBox(height: 10),
-              const Text(
-                'Thêm webview_flutter vào pubspec.yaml\nđể phát video trực tiếp',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white70, fontSize: 13),
-              ),
-              const SizedBox(height: 16),
-              SelectableText(
-                'youtube.com/watch?v=$trailerKey',
-                style: const TextStyle(color: Color(0xFF4FC3F7), fontSize: 12),
-              ),
-            ],
-          ),
+    if (isPlaying && controller != null) {
+      // ── Khi đã nhấn play: hiển thị YouTube player ──────────────────
+      return YoutubePlayerBuilder(
+        player: YoutubePlayer(
+          controller: controller!,
+          showVideoProgressIndicator: true,
+          progressIndicatorColor: Colors.red,
         ),
+        builder: (context, player) {
+          return player;
+        },
       );
     }
 

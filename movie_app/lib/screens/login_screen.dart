@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import '../data/movie_data.dart';
+import '../repositories/user_repository.dart';
+import '../models/user.dart';
 import 'landing_screen.dart';
 import 'register_screen.dart';
+import 'admin_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,12 +17,63 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
   bool _showLoginForm = false;
+  bool _isLoading = false;
+  String? _errorMessage;
+  final _userRepository = UserRepository();
 
   @override
   void dispose() {
     _emailController.dispose();
     _passController.dispose();
     super.dispose();
+  }
+
+  Future<void> _login() async {
+    final email = _emailController.text.trim();
+    final password = _passController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      setState(() => _errorMessage = 'Vui lòng nhập đầy đủ thông tin');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final user = await _userRepository.login(email: email, password: password);
+
+      if (user == null) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = 'Đăng nhập thất bại';
+        });
+        return;
+      }
+
+      // Đăng nhập thành công - chuyển hướng ngay
+      if (mounted) {
+        // Kiểm tra admin
+        if (user.isAdmin) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => AdminScreen(admin: user)),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => LandingScreen(user: user)),
+          );
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = e.toString().replaceAll('Exception: ', '');
+      });
+    }
   }
 
   void _goHome() {
@@ -60,12 +114,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ? _LoginForm(
               emailCtrl: _emailController,
               passCtrl: _passController,
-              onSubmit: _goHome,
+              onSubmit: _login,
               onRegister: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => RegisterScreen()),
+                MaterialPageRoute(builder: (_) => const RegisterScreen()),
               ),
               onBack: () => setState(() => _showLoginForm = false),
+              errorMessage: _errorMessage,
+              isLoading: _isLoading,
             )
                 : _HeroContent(
               emailCtrl: _emailController,
@@ -333,12 +389,14 @@ class _HeroContent extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // Login form (hiện khi nhấn Đăng nhập hoặc Bắt đầu không có email)
 // ─────────────────────────────────────────────────────────────────────────────
-class _LoginForm extends StatelessWidget {
+class _LoginForm extends StatefulWidget {
   final TextEditingController emailCtrl;
   final TextEditingController passCtrl;
   final VoidCallback onSubmit;
   final VoidCallback onRegister;
   final VoidCallback onBack;
+  final String? errorMessage;
+  final bool isLoading;
 
   const _LoginForm({
     required this.emailCtrl,
@@ -346,8 +404,15 @@ class _LoginForm extends StatelessWidget {
     required this.onSubmit,
     required this.onRegister,
     required this.onBack,
+    this.errorMessage,
+    this.isLoading = false,
   });
 
+  @override
+  State<_LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<_LoginForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -371,16 +436,38 @@ class _LoginForm extends StatelessWidget {
           ),
           const SizedBox(height: 28),
 
+          if (widget.errorMessage != null)
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.red.withOpacity(0.5)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.red),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      widget.errorMessage!,
+                      style: const TextStyle(color: Colors.red, fontSize: 13),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
           // Email
           _FormField(
-            controller: emailCtrl,
+            controller: widget.emailCtrl,
             hint: 'Email hoặc số điện thoại',
           ),
           const SizedBox(height: 16),
 
           // Password
           _FormField(
-            controller: passCtrl,
+            controller: widget.passCtrl,
             hint: 'Mật khẩu',
             obscure: true,
           ),
@@ -390,7 +477,7 @@ class _LoginForm extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: onSubmit,
+              onPressed: widget.isLoading ? null : widget.onSubmit,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
                 padding: const EdgeInsets.symmetric(vertical: 16),
@@ -398,14 +485,23 @@ class _LoginForm extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4)),
                 elevation: 0,
               ),
-              child: const Text(
-                'Đăng nhập',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              child: widget.isLoading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : const Text(
+                      'Đăng nhập',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
             ),
           ),
           const SizedBox(height: 16),
@@ -433,7 +529,7 @@ class _LoginForm extends StatelessWidget {
               const Text('Bạn chưa có tài khoản FlixFilm? ',
                   style: TextStyle(color: Colors.white54, fontSize: 14)),
               GestureDetector(
-                onTap: onRegister,
+                onTap: widget.onRegister,
                 child: const Text(
                   'Đăng ký ngay.',
                   style: TextStyle(
@@ -449,7 +545,7 @@ class _LoginForm extends StatelessWidget {
 
           // Back
           GestureDetector(
-            onTap: onBack,
+            onTap: widget.onBack,
             child: const Text(
               '← Quay lại',
               style: TextStyle(color: Colors.white54, fontSize: 13),

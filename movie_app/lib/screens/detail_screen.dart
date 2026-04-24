@@ -166,6 +166,13 @@ class _DetailContentState extends State<_DetailContent> {
                         text: '⭐ ${movie.rating}',
                         color: const Color(0xFFE5B30F),
                       ),
+                      if (movie.contentRating != null) ...[
+                        const SizedBox(width: 8),
+                        _MetaChip(
+                          text: movie.contentRating!,
+                          color: const Color(0xFF46D369),
+                        ),
+                      ],
                       if (movie.isSeries) ...[
                         const SizedBox(width: 8),
                         _MetaChip(
@@ -185,14 +192,75 @@ class _DetailContentState extends State<_DetailContent> {
                       fontSize: 13,
                     ),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 16),
+
+                  // ── Thông tin mở rộng (Director, Cast, Country...) ──────
+                  if (movie.hasExtendedInfo || movie.duration != null || movie.studio != null || movie.views != null) ...[
+                    _InfoRow(
+                      icon: Icons.person_outline,
+                      label: 'Đạo diễn',
+                      value: movie.director,
+                    ),
+                    if (movie.cast != null && movie.cast!.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      _InfoRow(
+                        icon: Icons.groups_outlined,
+                        label: 'Diễn viên',
+                        value: movie.cast!.take(4).join(', '),
+                      ),
+                    ],
+                    if (movie.country != null) ...[
+                      const SizedBox(height: 8),
+                      _InfoRow(
+                        icon: Icons.flag_outlined,
+                        label: 'Quốc gia',
+                        value: movie.country,
+                      ),
+                    ],
+                    if (movie.duration != null) ...[
+                      const SizedBox(height: 8),
+                      _InfoRow(
+                        icon: Icons.schedule_outlined,
+                        label: 'Thời lượng',
+                        value: movie.duration,
+                      ),
+                    ],
+                    if (movie.studio != null) ...[
+                      const SizedBox(height: 8),
+                      _InfoRow(
+                        icon: Icons.business_outlined,
+                        label: 'Hãng sản xuất',
+                        value: movie.studio,
+                      ),
+                    ],
+                    if (movie.views != null) ...[
+                      const SizedBox(height: 8),
+                      _InfoRow(
+                        icon: Icons.visibility_outlined,
+                        label: 'Lượt xem',
+                        value: _formatViews(movie.views!),
+                      ),
+                    ],
+                    const SizedBox(height: 16),
+                    const Divider(color: Color(0xFF333333), thickness: 1),
+                    const SizedBox(height: 16),
+                  ],
 
                   // Description
+                  const Text(
+                    'Nội dung',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
                   Text(
                     movie.description,
                     style: const TextStyle(
                       color: Color(0xDDFFFFFF),
-                      fontSize: 15,
+                      fontSize: 14,
                       height: 1.6,
                     ),
                   ),
@@ -387,9 +455,38 @@ class _EpisodeTile extends StatelessWidget {
             ),
             const SizedBox(width: 14),
             Expanded(
-              child: Text(
-                episode.title,
-                style: const TextStyle(color: Colors.white, fontSize: 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    episode.title,
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (episode.description != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      episode.description!,
+                      style: const TextStyle(
+                        color: Colors.white60,
+                        fontSize: 12,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                  if (episode.duration != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      episode.duration!,
+                      style: const TextStyle(
+                        color: Colors.white54,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
             const Icon(Icons.play_arrow_rounded, color: Colors.white54, size: 22),
@@ -398,4 +495,63 @@ class _EpisodeTile extends StatelessWidget {
       ),
     );
   }
+}
+
+// ── Widget hiển thị thông tin dạng row ───────────────────────────────────────
+class _InfoRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String? value;
+
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (value == null || value!.isEmpty) return const SizedBox.shrink();
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: const Color(0xFF999999), size: 18),
+        const SizedBox(width: 8),
+        Expanded(
+          child: RichText(
+            text: TextSpan(
+              style: const TextStyle(color: Colors.white, fontSize: 14),
+              children: [
+                TextSpan(
+                  text: '$label: ',
+                  style: const TextStyle(
+                    color: Color(0xFF999999),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                TextSpan(
+                  text: value,
+                  style: const TextStyle(
+                    color: Color(0xDDFFFFFF),
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ── Helper format lượt xem ───────────────────────────────────────────────────
+String _formatViews(int views) {
+  if (views >= 1000000) {
+    return '${(views / 1000000).toStringAsFixed(1)}M';
+  } else if (views >= 1000) {
+    return '${(views / 1000).toStringAsFixed(0)}K';
+  }
+  return views.toString();
 }

@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
-import '../data/movie_data.dart';
 import '../models/movie.dart';
+import '../models/user.dart';
+import '../repositories/movie_repository.dart';
+import '../repositories/user_repository.dart';
 import 'detail_screen.dart';
 import 'watch_screen.dart';
+import 'membership_screen.dart';
+import 'search_screen.dart';
 
 class LandingScreen extends StatefulWidget {
-  const LandingScreen({super.key});
+  final User? user;
+
+  const LandingScreen({super.key, this.user});
 
   @override
   State<LandingScreen> createState() => _LandingScreenState();
@@ -13,6 +19,44 @@ class LandingScreen extends StatefulWidget {
 
 class _LandingScreenState extends State<LandingScreen> {
   int _featuredIndex = 0;
+  User? _currentUser;
+  final _movieRepository = MovieRepository();
+  final _userRepository = UserRepository();
+
+  List<Movie> _movies = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+    _loadMovies();
+  }
+
+  void _loadUser() async {
+    if (widget.user != null) {
+      final user = await _userRepository.getUserById(widget.user!.id!);
+      setState(() => _currentUser = user);
+    }
+  }
+
+  void _loadMovies() async {
+    try {
+      debugPrint('=== Đang load phim ===');
+      final movies = await _movieRepository.getMovies();
+      debugPrint('=== Số lượng phim: ${movies.length} ===');
+      if (movies.isNotEmpty) {
+        debugPrint('=== Phim đầu tiên: ${movies.first.title} ===');
+      }
+      setState(() {
+        _movies = movies;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() => _isLoading = false);
+      debugPrint('Lỗi khi load phim: $e');
+    }
+  }
 
   void _openDetail(Movie movie) {
     showDialog(
@@ -22,36 +66,135 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 
+  void _openMembership() {
+    if (_currentUser == null) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => MembershipScreen(user: _currentUser!)),
+    ).then((_) => _loadUser());
+  }
+
+  List<Movie> _getMoviesByGenre(String genre) {
+    return _movies.where((m) => m.genre.contains(genre)).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final featured = movies[_featuredIndex];
+    if (_isLoading) {
+      return const Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_movies.isEmpty) {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.movie_outlined, size: 80, color: Colors.white38),
+              const SizedBox(height: 16),
+              const Text(
+                'Không có phim nào',
+                style: TextStyle(color: Colors.white54, fontSize: 18),
+              ),
+              const SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: _loadMovies,
+                child: const Text('Thử lại'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final featured = _movies[_featuredIndex % _movies.length];
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _HeroBanner(
-              movie: featured,
-              onPlay: () => Navigator.push(
+      body: Column(
+        children: [
+          // Top Bar
+          _TopBar(
+            user: _currentUser,
+            onMembership: _openMembership,
+            onLogout: () {
+              Navigator.pushReplacementNamed(context, '/');
+            },
+            onSearch: () {
+              Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => WatchScreen(movie: featured),
-                ),
+                MaterialPageRoute(builder: (_) => SearchScreen(user: _currentUser)),
+              );
+            },
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 16),
+                  _HeroBanner(
+                    movie: featured,
+                    onPlay: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => WatchScreen(movie: featured),
+                      ),
+                    ),
+                    onInfo: () => _openDetail(featured),
+                  ),
+                  const SizedBox(height: 24),
+                  _MovieRow(
+                    title: 'Trending',
+                    movies: _movies,
+                    onTap: (index) => setState(() => _featuredIndex = index),
+                    onInfoTap: (movie) => _openDetail(movie),
+                  ),
+                  const SizedBox(height: 24),
+                  _MovieRow(
+                    title: 'Hành động',
+                    movies: _getMoviesByGenre('Hành động'),
+                    onTap: (index) {},
+                    onInfoTap: (movie) => _openDetail(movie),
+                  ),
+                  const SizedBox(height: 24),
+                  _MovieRow(
+                    title: 'Chính kịch',
+                    movies: _getMoviesByGenre('Chính kịch'),
+                    onTap: (index) {},
+                    onInfoTap: (movie) => _openDetail(movie),
+                  ),
+                  const SizedBox(height: 24),
+                  _MovieRow(
+                    title: 'Tội phạm',
+                    movies: _getMoviesByGenre('Tội phạm'),
+                    onTap: (index) {},
+                    onInfoTap: (movie) => _openDetail(movie),
+                  ),
+                  const SizedBox(height: 24),
+                  _MovieRow(
+                    title: 'Khoa học viễn tưởng',
+                    movies: _getMoviesByGenre('Khoa học viễn tưởng'),
+                    onTap: (index) {},
+                    onInfoTap: (movie) => _openDetail(movie),
+                  ),
+                  const SizedBox(height: 24),
+                  _MovieRow(
+                    title: 'Lãng mạn',
+                    movies: _getMoviesByGenre('Lãng mạn'),
+                    onTap: (index) {},
+                    onInfoTap: (movie) => _openDetail(movie),
+                  ),
+                  const SizedBox(height: 32),
+                ],
               ),
-              onInfo: () => _openDetail(featured),
             ),
-            const SizedBox(height: 24),
-            _MovieRow(
-              title: 'Trending',
-              movies: movies,
-              onTap: (index) => setState(() => _featuredIndex = index),
-              onInfoTap: (movie) => _openDetail(movie),
-            ),
-            const SizedBox(height: 32),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -388,6 +531,118 @@ class _PosterCardState extends State<_PosterCard> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Top Bar với thông tin user
+// ─────────────────────────────────────────────────────────────────────────────
+class _TopBar extends StatelessWidget {
+  final User? user;
+  final VoidCallback onMembership;
+  final VoidCallback onLogout;
+  final VoidCallback onSearch;
+
+  const _TopBar({
+    required this.user,
+    required this.onMembership,
+    required this.onLogout,
+    required this.onSearch,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final hasMembership = user?.hasActiveMembership ?? false;
+    final remainingDays = user?.remainingDays;
+
+    return Container(
+      height: 60,
+      color: const Color(0xFF141414),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        children: [
+          // Logo
+          const Text(
+            'FLIXFILM',
+            style: TextStyle(
+              color: Colors.red,
+              fontSize: 24,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 2,
+            ),
+          ),
+          // Search button
+          IconButton(
+            onPressed: onSearch,
+            icon: const Icon(Icons.search, color: Colors.white70),
+            tooltip: 'Tìm kiếm',
+          ),
+          const Spacer(),
+          // User info
+          if (user != null) ...[
+            // Membership status
+            if (hasMembership)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: Colors.green.withOpacity(0.5)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.star, color: Colors.green, size: 16),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Còn $remainingDays ngày',
+                      style: const TextStyle(
+                        color: Colors.green,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            const SizedBox(width: 12),
+            // Email
+            Text(
+              user!.email,
+              style: const TextStyle(color: Colors.white70, fontSize: 13),
+            ),
+            const SizedBox(width: 16),
+            // Membership button
+            ElevatedButton(
+              onPressed: onMembership,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: hasMembership ? Colors.green : Colors.amber,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              child: Text(
+                hasMembership ? 'Gia hạn' : 'Nâng cấp',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            // Logout button
+            IconButton(
+              onPressed: onLogout,
+              icon: const Icon(Icons.logout, color: Colors.white60),
+              tooltip: 'Đăng xuất',
+            ),
+          ] else ...[
+            const Spacer(),
+          ],
+        ],
       ),
     );
   }

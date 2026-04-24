@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../data/movie_data.dart';
 import '../models/movie.dart';
 import 'detail_screen.dart';
+import 'search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -38,6 +39,31 @@ class _HomeScreenState extends State<HomeScreen> {
           banner(movie),
           sectionTitle("Trending"),
           movieRow(),
+        ],
+      ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          'FLIXFILM',
+          style: TextStyle(
+            color: Colors.red,
+            fontSize: 24,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 2,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search, color: Colors.white70),
+            tooltip: 'Tìm kiếm',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const SearchScreen()),
+              );
+            },
+          ),
         ],
       ),
     );
